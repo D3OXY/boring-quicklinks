@@ -13,7 +13,7 @@ import { exportData, importData } from "./storage/storage";
 
 export default function ImportExport() {
   return (
-    <List navigationTitle="Import / Export Quick Links">
+    <List>
       <List.Item
         icon={Icon.Upload}
         title="Export to Clipboard"

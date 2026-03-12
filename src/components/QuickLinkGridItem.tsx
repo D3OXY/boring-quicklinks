@@ -38,7 +38,7 @@ export function QuickLinkGridItem({
       <Action.OpenInBrowser url={item.url} onOpen={() => recordUse(item.id)} />
     ) : (
       <Action.Open
-        title="Open"
+        title="Open Link"
         target={item.url}
         onOpen={() => recordUse(item.id)}
       />
