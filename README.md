@@ -1,5 +1,7 @@
 # Boring Quick Links
 
+![Boring Quick Links](assets/banner.png)
+
 A Raycast extension for managing and quickly opening URLs, files, folders, and apps through an emoji-picker-style grid interface. Think Raycast Quicklinks, but with **nested containers** and a visual grid layout.
 
 ## Features
