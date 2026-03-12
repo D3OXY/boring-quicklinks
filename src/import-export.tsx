@@ -1,4 +1,14 @@
-import { Action, ActionPanel, Clipboard, Icon, List, showToast, Toast, confirmAlert, Alert } from "@raycast/api";
+import {
+  Action,
+  ActionPanel,
+  Clipboard,
+  Icon,
+  List,
+  showToast,
+  Toast,
+  confirmAlert,
+  Alert,
+} from "@raycast/api";
 import { exportData, importData } from "./storage/storage";
 
 export default function ImportExport() {
@@ -16,7 +26,10 @@ export default function ImportExport() {
               onAction={async () => {
                 const json = await exportData();
                 await Clipboard.copy(json);
-                await showToast({ style: Toast.Style.Success, title: "Exported to clipboard" });
+                await showToast({
+                  style: Toast.Style.Success,
+                  title: "Exported to clipboard",
+                });
               }}
             />
           </ActionPanel>
@@ -34,19 +47,29 @@ export default function ImportExport() {
               onAction={async () => {
                 const confirmed = await confirmAlert({
                   title: "Import Quick Links?",
-                  message: "This will replace all existing quick links with the data from your clipboard.",
-                  primaryAction: { title: "Import", style: Alert.ActionStyle.Destructive },
+                  message:
+                    "This will replace all existing quick links with the data from your clipboard.",
+                  primaryAction: {
+                    title: "Import",
+                    style: Alert.ActionStyle.Destructive,
+                  },
                 });
                 if (!confirmed) return;
 
                 try {
                   const text = await Clipboard.readText();
                   if (!text) {
-                    await showToast({ style: Toast.Style.Failure, title: "Clipboard is empty" });
+                    await showToast({
+                      style: Toast.Style.Failure,
+                      title: "Clipboard is empty",
+                    });
                     return;
                   }
                   await importData(text);
-                  await showToast({ style: Toast.Style.Success, title: "Imported successfully" });
+                  await showToast({
+                    style: Toast.Style.Success,
+                    title: "Imported successfully",
+                  });
                 } catch (e) {
                   await showToast({
                     style: Toast.Style.Failure,

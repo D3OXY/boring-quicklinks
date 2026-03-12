@@ -1,4 +1,12 @@
-import { Action, ActionPanel, Form, Icon, showToast, Toast, useNavigation } from "@raycast/api";
+import {
+  Action,
+  ActionPanel,
+  Form,
+  Icon,
+  showToast,
+  Toast,
+  useNavigation,
+} from "@raycast/api";
 import { randomUUID } from "crypto";
 import { useState } from "react";
 import { useQuickLinks } from "../hooks/useQuickLinks";
@@ -20,7 +28,9 @@ const ICON_PLACEHOLDERS: Record<string, string> = {
 export function LinkForm({ existingLink, parentId }: LinkFormProps) {
   const { addItem, updateItem } = useQuickLinks();
   const { pop } = useNavigation();
-  const [iconType, setIconType] = useState(existingLink?.icon?.type ?? "favicon");
+  const [iconType, setIconType] = useState(
+    existingLink?.icon?.type ?? "favicon",
+  );
 
   async function handleSubmit(values: {
     name: string;
@@ -32,16 +42,25 @@ export function LinkForm({ existingLink, parentId }: LinkFormProps) {
     keywords: string;
   }) {
     if (!values.name.trim()) {
-      await showToast({ style: Toast.Style.Failure, title: "Name is required" });
+      await showToast({
+        style: Toast.Style.Failure,
+        title: "Name is required",
+      });
       return;
     }
     if (!values.isContainer && !values.url.trim()) {
-      await showToast({ style: Toast.Style.Failure, title: "URL / Path is required" });
+      await showToast({
+        style: Toast.Style.Failure,
+        title: "URL / Path is required",
+      });
       return;
     }
 
     const icon: ItemIcon | undefined = values.iconValue.trim()
-      ? { type: values.iconType as ItemIcon["type"], value: values.iconValue.trim() }
+      ? {
+          type: values.iconType as ItemIcon["type"],
+          value: values.iconValue.trim(),
+        }
       : undefined;
 
     const keywords = values.keywords
@@ -56,7 +75,9 @@ export function LinkForm({ existingLink, parentId }: LinkFormProps) {
         name: values.name.trim(),
         url: values.url.trim() || undefined,
         isContainer: values.isContainer || undefined,
-        children: values.isContainer ? (existingLink.children ?? []) : undefined,
+        children: values.isContainer
+          ? (existingLink.children ?? [])
+          : undefined,
         icon,
         color: values.color || undefined,
         keywords: keywords.length > 0 ? keywords : undefined,
@@ -85,11 +106,20 @@ export function LinkForm({ existingLink, parentId }: LinkFormProps) {
       navigationTitle={existingLink ? "Edit Quick Link" : "Add Quick Link"}
       actions={
         <ActionPanel>
-          <Action.SubmitForm title={existingLink ? "Save" : "Add"} icon={Icon.Check} onSubmit={handleSubmit} />
+          <Action.SubmitForm
+            title={existingLink ? "Save" : "Add"}
+            icon={Icon.Check}
+            onSubmit={handleSubmit}
+          />
         </ActionPanel>
       }
     >
-      <Form.TextField id="name" title="Name" defaultValue={existingLink?.name ?? ""} placeholder="GitHub" />
+      <Form.TextField
+        id="name"
+        title="Name"
+        defaultValue={existingLink?.name ?? ""}
+        placeholder="GitHub"
+      />
       <Form.TextField
         id="url"
         title="URL / Path"
@@ -109,7 +139,11 @@ export function LinkForm({ existingLink, parentId }: LinkFormProps) {
         onChange={setIconType}
       >
         <Form.Dropdown.Item title="Auto (Favicon)" value="favicon" />
-        <Form.Dropdown.Item title="Brand (SVG)" value="brand" icon={Icon.Star} />
+        <Form.Dropdown.Item
+          title="Brand (SVG)"
+          value="brand"
+          icon={Icon.Star}
+        />
         <Form.Dropdown.Item title="Emoji" value="emoji" />
         <Form.Dropdown.Item title="Raycast Icon" value="raycast" />
         <Form.Dropdown.Item title="Image URL" value="url" />
@@ -120,9 +154,20 @@ export function LinkForm({ existingLink, parentId }: LinkFormProps) {
         defaultValue={existingLink?.icon?.value ?? ""}
         placeholder={ICON_PLACEHOLDERS[iconType] ?? ""}
       />
-      <Form.Dropdown id="color" title="Color" defaultValue={existingLink?.color ?? ""}>
+      <Form.Dropdown
+        id="color"
+        title="Color"
+        defaultValue={existingLink?.color ?? ""}
+      >
         {ICON_COLORS.map((c) => (
-          <Form.Dropdown.Item key={c.value} title={c.name} value={c.value} icon={c.value ? { source: Icon.Circle, tintColor: c.value } : undefined} />
+          <Form.Dropdown.Item
+            key={c.value}
+            title={c.name}
+            value={c.value}
+            icon={
+              c.value ? { source: Icon.Circle, tintColor: c.value } : undefined
+            }
+          />
         ))}
       </Form.Dropdown>
       <Form.TextField

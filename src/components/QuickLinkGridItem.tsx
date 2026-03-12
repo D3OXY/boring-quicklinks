@@ -1,4 +1,13 @@
-import { Action, ActionPanel, confirmAlert, Alert, Icon, Grid, showToast, Toast } from "@raycast/api";
+import {
+  Action,
+  ActionPanel,
+  confirmAlert,
+  Alert,
+  Icon,
+  Grid,
+  showToast,
+  Toast,
+} from "@raycast/api";
 import { QuickLink, BreadcrumbPath } from "../utils/types";
 import { resolveIcon, isUrl } from "../utils/icons";
 import { useQuickLinks } from "../hooks/useQuickLinks";
@@ -6,8 +15,17 @@ import { LinkForm } from "./LinkForm";
 import { QuickLinksGrid } from "./QuickLinksGrid";
 import { SHORTCUTS } from "../utils/constants";
 
-export function QuickLinkGridItem({ item, breadcrumb, nested }: { item: QuickLink; breadcrumb: BreadcrumbPath; nested?: boolean }) {
-  const { deleteItem, recordUse, moveItemTo, getContainerTargets } = useQuickLinks();
+export function QuickLinkGridItem({
+  item,
+  breadcrumb,
+  nested,
+}: {
+  item: QuickLink;
+  breadcrumb: BreadcrumbPath;
+  nested?: boolean;
+}) {
+  const { deleteItem, recordUse, moveItemTo, getContainerTargets } =
+    useQuickLinks();
   const childCount = item.children?.length ?? 0;
 
   // Include parent container names as keywords so "git neuro" finds "Neurofactor" inside "GitHub"
@@ -19,13 +37,20 @@ export function QuickLinkGridItem({ item, breadcrumb, nested }: { item: QuickLin
     return isUrl(item.url) ? (
       <Action.OpenInBrowser url={item.url} onOpen={() => recordUse(item.id)} />
     ) : (
-      <Action.Open title="Open" target={item.url} onOpen={() => recordUse(item.id)} />
+      <Action.Open
+        title="Open"
+        target={item.url}
+        onOpen={() => recordUse(item.id)}
+      />
     );
   }
 
   function primaryAction() {
     if (item.isContainer) {
-      const newBreadcrumb: BreadcrumbPath = [...breadcrumb, { id: item.id, name: item.name }];
+      const newBreadcrumb: BreadcrumbPath = [
+        ...breadcrumb,
+        { id: item.id, name: item.name },
+      ];
       return (
         <Action.Push
           icon={Icon.ArrowRight}
@@ -59,10 +84,15 @@ export function QuickLinkGridItem({ item, breadcrumb, nested }: { item: QuickLin
   function moveToSubmenu() {
     const targets = getContainerTargets(item.id);
     // Find where the item currently lives
-    const currentParentId = breadcrumb.length > 0 ? breadcrumb[breadcrumb.length - 1].id : null;
+    const currentParentId =
+      breadcrumb.length > 0 ? breadcrumb[breadcrumb.length - 1].id : null;
 
     return (
-      <ActionPanel.Submenu icon={Icon.ArrowRightCircle} title="Move To" shortcut={SHORTCUTS.moveTo}>
+      <ActionPanel.Submenu
+        icon={Icon.ArrowRightCircle}
+        title="Move To…"
+        shortcut={SHORTCUTS.moveTo}
+      >
         {targets
           .filter((t) => t.id !== currentParentId)
           .map((target) => (
@@ -72,7 +102,10 @@ export function QuickLinkGridItem({ item, breadcrumb, nested }: { item: QuickLin
               title={target.path}
               onAction={async () => {
                 await moveItemTo(item.id, target.id);
-                await showToast({ style: Toast.Style.Success, title: `Moved to ${target.path}` });
+                await showToast({
+                  style: Toast.Style.Success,
+                  title: `Moved to ${target.path}`,
+                });
               }}
             />
           ))}
@@ -102,7 +135,7 @@ export function QuickLinkGridItem({ item, breadcrumb, nested }: { item: QuickLin
           <ActionPanel.Section>
             <Action.Push
               icon={Icon.Pencil}
-              title="Edit"
+              title="Edit Quick Link"
               shortcut={SHORTCUTS.edit}
               target={<LinkForm existingLink={item} />}
             />
@@ -117,7 +150,7 @@ export function QuickLinkGridItem({ item, breadcrumb, nested }: { item: QuickLin
             {moveToSubmenu()}
             <Action
               icon={Icon.Trash}
-              title="Delete"
+              title="Delete Quick Link"
               style={Action.Style.Destructive}
               shortcut={SHORTCUTS.delete}
               onAction={async () => {
@@ -129,7 +162,10 @@ export function QuickLinkGridItem({ item, breadcrumb, nested }: { item: QuickLin
                   await confirmAlert({
                     title: `Delete "${item.name}"?`,
                     message: msg,
-                    primaryAction: { title: "Delete", style: Alert.ActionStyle.Destructive },
+                    primaryAction: {
+                      title: "Delete",
+                      style: Alert.ActionStyle.Destructive,
+                    },
                   })
                 ) {
                   await deleteItem(item.id);
@@ -139,7 +175,11 @@ export function QuickLinkGridItem({ item, breadcrumb, nested }: { item: QuickLin
           </ActionPanel.Section>
           {item.url && (
             <ActionPanel.Section>
-              <Action.CopyToClipboard title="Copy URL" content={item.url} shortcut={SHORTCUTS.copyUrl} />
+              <Action.CopyToClipboard
+                title="Copy URL"
+                content={item.url}
+                shortcut={SHORTCUTS.copyUrl}
+              />
             </ActionPanel.Section>
           )}
         </ActionPanel>

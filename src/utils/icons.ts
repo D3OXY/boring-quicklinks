@@ -1,4 +1,4 @@
-import { Color, Icon, Image, environment } from "@raycast/api";
+import { Icon, Image, environment } from "@raycast/api";
 import { QuickLink, ItemIcon } from "./types";
 import * as simpleIcons from "simple-icons";
 
@@ -7,7 +7,9 @@ export function isUrl(str: string): boolean {
 }
 
 export function isFilePath(str: string): boolean {
-  return str.startsWith("/") || str.startsWith("~") || str.startsWith("file://");
+  return (
+    str.startsWith("/") || str.startsWith("~") || str.startsWith("file://")
+  );
 }
 
 function getDomain(url: string): string {
@@ -51,9 +53,13 @@ function resolveItemIcon(icon: ItemIcon, color?: string): Image.ImageLike {
     case "emoji":
       return icon.value;
     case "raycast": {
-      const rcIcon = (Icon as Record<string, Image.ImageLike>)[icon.value] ?? Icon.Link;
+      const rcIcon =
+        (Icon as Record<string, Image.ImageLike>)[icon.value] ?? Icon.Link;
       if (color) {
-        return { source: rcIcon as Image.Source, tintColor: { light: color, dark: color, adjustContrast: false } };
+        return {
+          source: rcIcon as Image.Source,
+          tintColor: { light: color, dark: color, adjustContrast: false },
+        };
       }
       return rcIcon;
     }
@@ -78,7 +84,14 @@ export function resolveIcon(item: QuickLink): Image.ImageLike {
 
   if (item.isContainer && !item.url) {
     if (item.color) {
-      return { source: Icon.Folder as Image.Source, tintColor: { light: item.color, dark: item.color, adjustContrast: false } };
+      return {
+        source: Icon.Folder as Image.Source,
+        tintColor: {
+          light: item.color,
+          dark: item.color,
+          adjustContrast: false,
+        },
+      };
     }
     return Icon.Folder;
   }

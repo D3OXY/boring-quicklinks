@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { loadData, saveData } from "../storage/storage";
-import { BreadcrumbPath, ContainerTarget, QuickLink, QuickLinksData } from "../utils/types";
+import {
+  BreadcrumbPath,
+  ContainerTarget,
+  QuickLink,
+  QuickLinksData,
+} from "../utils/types";
 
 // Module-level reactive store — works across Raycast navigation boundaries
 let storeData: QuickLinksData = { version: 1, items: [] };
@@ -80,38 +85,55 @@ export function useQuickLinks() {
     await persistStore(newData);
   }, []);
 
-  const moveItemTo = useCallback(async (itemId: string, targetContainerId: string | null) => {
-    const newData = structuredClone(storeData);
+  const moveItemTo = useCallback(
+    async (itemId: string, targetContainerId: string | null) => {
+      const newData = structuredClone(storeData);
 
-    // Find and remove from current location
-    const { items: sourceList, index } = findItemLocation(newData.items, itemId);
-    if (!sourceList || index === -1) return;
-    const [item] = sourceList.splice(index, 1);
+      // Find and remove from current location
+      const { items: sourceList, index } = findItemLocation(
+        newData.items,
+        itemId,
+      );
+      if (!sourceList || index === -1) return;
+      const [item] = sourceList.splice(index, 1);
 
-    // Insert into target
-    if (targetContainerId === null) {
-      newData.items.push(item);
-    } else {
-      const target = findItemById(newData.items, targetContainerId);
-      if (target?.isContainer) {
-        if (!target.children) target.children = [];
-        target.children.push(item);
+      // Insert into target
+      if (targetContainerId === null) {
+        newData.items.push(item);
+      } else {
+        const target = findItemById(newData.items, targetContainerId);
+        if (target?.isContainer) {
+          if (!target.children) target.children = [];
+          target.children.push(item);
+        }
       }
-    }
 
-    await persistStore(newData);
-  }, []);
+      await persistStore(newData);
+    },
+    [],
+  );
 
   const getContainerTargets = useCallback(
     (excludeId?: string): ContainerTarget[] => {
-      const targets: ContainerTarget[] = [{ id: null, name: "Root", path: "Root" }];
+      const targets: ContainerTarget[] = [
+        { id: null, name: "Root", path: "Root" },
+      ];
       collectContainers(data.items, [], targets, excludeId);
       return targets;
     },
     [data],
   );
 
-  return { data, isLoading, addItem, updateItem, deleteItem, recordUse, moveItemTo, getContainerTargets };
+  return {
+    data,
+    isLoading,
+    addItem,
+    updateItem,
+    deleteItem,
+    recordUse,
+    moveItemTo,
+    getContainerTargets,
+  };
 }
 
 /** Sort items: most used first, then alphabetically for equal usage */
@@ -124,7 +146,10 @@ export function sortItems(items: QuickLink[]): QuickLink[] {
   });
 }
 
-export function resolveItemsAtPath(items: QuickLink[], breadcrumb: BreadcrumbPath): QuickLink[] {
+export function resolveItemsAtPath(
+  items: QuickLink[],
+  breadcrumb: BreadcrumbPath,
+): QuickLink[] {
   let current = items;
   for (const entry of breadcrumb) {
     const found = current.find((item) => item.id === entry.id);

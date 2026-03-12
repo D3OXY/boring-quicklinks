@@ -43,7 +43,8 @@ function validateItems(items: unknown): items is QuickLink[] {
   return items.every((item) => {
     if (typeof item !== "object" || item === null) return false;
     const obj = item as Record<string, unknown>;
-    if (typeof obj.id !== "string" || typeof obj.name !== "string") return false;
+    if (typeof obj.id !== "string" || typeof obj.name !== "string")
+      return false;
     if (obj.isContainer && obj.children) {
       return validateItems(obj.children);
     }
